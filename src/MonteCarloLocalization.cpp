@@ -72,8 +72,8 @@ void  MCLocalization_MRPT::initialize(){
 
 	///
 	motion_model_options_.modelSelection = mrpt::obs::CActionRobotMovement2D::mmGaussian;
-	motion_model_options_.gausianModel.minStdXY  = m_minStdXY;
-	motion_model_options_.gausianModel.minStdPHI = m_minStdPHI;
+	motion_model_options_.gaussianModel.minStdXY  = m_minStdXY;
+	motion_model_options_.gaussianModel.minStdPHI = m_minStdPHI;
 
 	//pdf_.resetUniformFreeSpace(&m_map, 0.7f, m_particles_count, m_min_x, m_max_x, m_min_y, m_max_y);//, m_min_phi, m_max_phi);
 	pdf_.resetUniform(m_map.getXMin(), m_map.getXMax(),
@@ -101,16 +101,16 @@ bool MCLocalization_MRPT::addRange(const ssr::Range& range)
 {
   mrpt::obs::CObservation2DRangeScanPtr observation = mrpt::obs::CObservation2DRangeScan::Create();
 	observation->rightToLeft = true;
-	observation->validRange.resize(range.size);
-	observation->scan.resize(range.size);
+	//observation->validRange.resize(range.size);
+	observation->resizeScan(range.size);
 	observation->aperture = range.aperture;
 	observation->timestamp = mrpt::system::getCurrentTime();
 	for(int i = 0;i < range.size; i++) {
-		observation->scan[i] = range.range[i];
+		observation->setScanRange(i, range.range[i]);
 		if(observation->scan[i] > m_range_min && observation->scan[i] < m_range_max) {
-			observation->validRange[i] = 1;
+			observation->setScanRangeValidity(i, 1);
 		} else {
-			observation->validRange[i] = 0;
+			observation->setScanRangeValidity(i, 0);
 		}
 	}
 	observation->setSensorPose(m_RangeSensorPose);
