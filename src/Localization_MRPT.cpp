@@ -162,11 +162,13 @@ Localization_MRPT::Localization_MRPT(RTC::Manager* manager)
   : RTC::DataFlowComponentBase(manager),
     m_rangeIn("range", m_range),
     m_odometryIn("odometry", m_odometry),
+    m_modeIn("mode", m_mode),
     m_estimatedPoseOut("estimatedPose", m_estimatedPose),
     m_mapServerPort("mapServer")
+
+    // </rtc-template>
 {
 }
-    // </rtc-template>
 
 /*!
  * @brief destructor
@@ -175,6 +177,8 @@ Localization_MRPT::~Localization_MRPT()
 {
 }
 
+
+
 RTC::ReturnCode_t Localization_MRPT::onInitialize()
 {
   // Registration: InPort/OutPort/Service
@@ -182,6 +186,7 @@ RTC::ReturnCode_t Localization_MRPT::onInitialize()
   // Set InPort buffers
   addInPort("range", m_rangeIn);
   addInPort("odometry", m_odometryIn);
+  addInPort("mode", m_modeIn);
   
   // Set OutPort buffer
   addOutPort("estimatedPose", m_estimatedPoseOut);
@@ -282,7 +287,8 @@ RTC::ReturnCode_t Localization_MRPT::onShutdown(RTC::UniqueId ec_id)
   return RTC::RTC_OK;
 }
 */
-      
+
+
 RTC::ReturnCode_t Localization_MRPT::onActivated(RTC::UniqueId ec_id)
 {
   m_MODE = MODE_NORMAL;  
@@ -383,6 +389,7 @@ RTC::ReturnCode_t Localization_MRPT::onActivated(RTC::UniqueId ec_id)
 
   m_odomUpdated = m_rangeUpdated = false;
   std::cout << "[RTC::Localization_MRPT] Successfully Activated." << std::endl;
+  m_mode.data = 1; //1‚Å’Êí‚Ì“®ì
   return RTC::RTC_OK;
 
 }
@@ -392,12 +399,22 @@ RTC::ReturnCode_t Localization_MRPT::onDeactivated(RTC::UniqueId ec_id)
   return RTC::RTC_OK;
 }
 
+
 RTC::ReturnCode_t Localization_MRPT::onExecute(RTC::UniqueId ec_id)
 {
   coil::TimeValue currentTime = coil::gettimeofday();
 
+  if (m_modeIn.isNew()) {
+    m_modeIn.read();
+  }
+
   if(m_odometryIn.isNew()){
 	  m_odometryIn.read();
+      if (m_mode.data == 0) { //0‚Ìê‡‚Íodometry‚ð‘f’Ê‚µ
+        m_estimatedPose = m_odometry;
+        m_estimatedPoseOut.write();
+        return RTC::RTC_OK;
+      }
 	  ssr::Pose2D CurrentPose(m_odometry.data.position.x, m_odometry.data.position.y, m_odometry.data.heading);
       ssr::Pose2D deltaPose = CurrentPose - OldPose;
 	  if(deltaPose.x < -5 || deltaPose.x >5){// the number should be add configuration
