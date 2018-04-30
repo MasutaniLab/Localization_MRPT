@@ -132,6 +132,7 @@ poseTimeOut      float              3.0
 =============== =========== ============================== ====
 range           InPort      RTC::RangeData                 
 odometry        InPort      RTC::TimedPose2D               
+mode            InPort      RTC::TimedShort                
 estimatedPose   OutPort     RTC::TimedPose2D               
 OGMapServer     ServicePort RTC::OGMapServer               
 =============== =========== ============================== ====

@@ -10,20 +10,12 @@
 #ifndef LOCALIZATION_MRPT_H
 #define LOCALIZATION_MRPT_H
 
-#include <rtm/Manager.h>
-#include <rtm/DataFlowComponentBase.h>
-#include <rtm/CorbaPort.h>
-#include <rtm/DataInPort.h>
-#include <rtm/DataOutPort.h>
 #include <rtm/idl/BasicDataTypeSkel.h>
 #include <rtm/idl/ExtendedDataTypesSkel.h>
 #include <rtm/idl/InterfaceDataTypesSkel.h>
 
 using namespace RTC;
 using namespace std;
-	
-
-
 // Service implementation headers
 // <rtc-template block="service_impl_h">
 
@@ -34,6 +26,16 @@ using namespace std;
 #include "MobileRobotStub.h"
 
 // </rtc-template>
+
+// Service Consumer stub headers
+// <rtc-template block="port_stub_h">
+// </rtc-template>
+
+#include <rtm/Manager.h>
+#include <rtm/DataFlowComponentBase.h>
+#include <rtm/CorbaPort.h>
+#include <rtm/DataInPort.h>
+#include <rtm/DataOutPort.h>
 
 using namespace RTC;
 
@@ -426,6 +428,10 @@ class Localization_MRPT
   /*!
    */
   InPort<RTC::TimedPose2D> m_odometryIn;
+  RTC::TimedShort m_mode;
+  /*!
+   */
+  InPort<RTC::TimedShort> m_modeIn;
   
   // </rtc-template>
 

@@ -8,11 +8,11 @@
 
 #   rtc-template -bcxx --module-name=Localization_MRPT 
 #   --module-desc='Localization MRPT Component' --module-version=1.0.0 --module-vendor=Sugar Sweet Robotics 
-#   --module-category=Navigatio --module-comp-type=STATIC 
+#   --module-category=Navigation --module-comp-type=STATIC 
 #   --module-act-type=PERIODIC --module-max-inst=1 
-#   --config=min_x:float:-0.01 --config=max_x:float:0.01 --config=min_y:float:-0.01 --config=max_y:float:0.01 --config=min_phi:float:0.05 --config=max_phi:float:-0.05 --config=range_min:float:0.3 --config=range_max:float:10 
-#   --inport=range:RTC::RangeData --inport=odometry:RTC::TimedPose2D --outport=estimatedPose:RTC::TimedPose2D 
-#   --consumer-idl=C:\Users\ogata\Desktop\MappingRTCs\Localization_MRPT\idl\MobileRobot.idl 
+#   --config=min_x:float:-0.01 --config=max_x:float:0.01 --config=min_y:float:-0.01 --config=max_y:float:0.01 --config=min_phi:float:-0.01 --config=max_phi:float:0.01 --config=range_min:float:0.3 --config=range_max:float:10 --config=gausianModel_minStdXY:float:0.01 --config=gausianModel_minStdPHI:float:0.01 --config=KLD_binSize_PHI:float:0.01 --config=KLD_binSize_XY:float:0.01 --config=KLD_delta:float:0.02 --config=KLD_epsilon:float:0.02 --config=KLD_maxSampleSize:int:1000 --config=KLD_minSampleSize:int:150 --config=KLD_minSamplesPerBin:double:0 --config=adaptiveSampleSize:bool:1 --config=pfAuxFilterOptimal_MaximumSearchSamples:int:10 --config=BETA:double:0.5 --config=sampleSize:int:1 --config=poseTimeOut:float:3.0 
+#   --inport=range:RTC::RangeData --inport=odometry:RTC::TimedPose2D --inport=mode:RTC::TimedShort --outport=estimatedPose:RTC::TimedPose2D 
+#   --consumer-idl=C:\A\NavigationManager\idl\MobileRobot.idl 
 #   --consumer=mapServer:OGMapServer:RTC::OGMapServer 
 
 
@@ -24,7 +24,7 @@ Module Name: Localization_MRPT
 Description: Localization MRPT Component
 Version:     1.0.0
 Vendor:      Sugar Sweet Robotics
-Category:    Navigatio
+Category:    Navigation
 Kind:        DataFlowComponent
 Comp. Type:  STATIC
 Act. Type:   PERIODIC
@@ -91,6 +91,24 @@ Lang Type:
 	Description: 
 	PortType: 
 	DataType:    RTC::TimedPose2D
+	MaxOut: 
+	[Data Elements]
+		Name:
+		Type:            
+		Number:          
+		Semantics:       
+		Unit:            
+		Frequency:       
+		Operation Cycle: 
+		RangeLow:
+		RangeHigh:
+		DefaultValue:
+
+	Name:        mode
+	PortNumber:  2
+	Description: 
+	PortType: 
+	DataType:    RTC::TimedShort
 	MaxOut: 
 	[Data Elements]
 		Name:
