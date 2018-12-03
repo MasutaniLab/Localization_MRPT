@@ -410,11 +410,6 @@ RTC::ReturnCode_t Localization_MRPT::onExecute(RTC::UniqueId ec_id)
 
   if(m_odometryIn.isNew()){
 	  m_odometryIn.read();
-      if (m_mode.data == 0) { //0ÇÃèÍçáÇÕodometryÇëfí Çµ
-        m_estimatedPose = m_odometry;
-        m_estimatedPoseOut.write();
-        return RTC::RTC_OK;
-      }
 	  ssr::Pose2D CurrentPose(m_odometry.data.position.x, m_odometry.data.position.y, m_odometry.data.heading);
       ssr::Pose2D deltaPose = CurrentPose - OldPose;
 	  if(deltaPose.x < -5 || deltaPose.x >5){// the number should be add configuration
@@ -447,11 +442,16 @@ RTC::ReturnCode_t Localization_MRPT::onExecute(RTC::UniqueId ec_id)
   if(m_rangeUpdated && m_odomUpdated) {
     mrpt::poses::CPose2D estPose;
     estPose = mcl.getEstimatedPose();
-	m_estimatedPose.data.position.x = estPose.x();
-	m_estimatedPose.data.position.y = estPose.y();
-	m_estimatedPose.data.heading    = estPose.phi();
+    if (m_mode.data == 0) { //0ÇÃèÍçáÇÕodometryÇëfí Çµ
+      m_estimatedPose = m_odometry;
+    } else {
+      m_estimatedPose.data.position.x = estPose.x();
+      m_estimatedPose.data.position.y = estPose.y();
+      m_estimatedPose.data.heading = estPose.phi();
+    }
 	setTimestamp<TimedPose2D>(m_estimatedPose);
 	m_estimatedPoseOut.write();
+    m_odomUpdated = m_rangeUpdated = false;
   }
   
   return RTC::RTC_OK;
